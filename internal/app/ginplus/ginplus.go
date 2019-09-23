@@ -128,28 +128,17 @@ func ResPage(c *gin.Context, v interface{}, pr *schema.PaginationResult) {
 
 // ResList 响应列表数据
 func ResList(c *gin.Context, v interface{}) {
-	ResSuccess(c, schema.HTTPList{List: v})
+	ResSuccess(c, schema.HTTPList{List: v, RequestId: GetTraceID(c)})
 }
 
 // ResOK 响应OK
 func ResOK(c *gin.Context) {
-	ResSuccess(c, schema.HTTPStatus{Status: "OK"})
+	ResSuccess(c, schema.HTTPStatus{Status: "OK", RequestId: GetTraceID(c)})
 }
 
 // ResSuccess 响应成功
 func ResSuccess(c *gin.Context, v interface{}) {
 	ResJSON(c, http.StatusOK, v)
-}
-
-// ResJSON 响应JSON数据
-func ResJSON(c *gin.Context, status int, v interface{}) {
-	buf, err := util.JSONMarshal(v)
-	if err != nil {
-		panic(err)
-	}
-	c.Set(ResBodyKey, buf)
-	c.Data(status, "application/json; charset=utf-8", buf)
-	c.Abort()
 }
 
 // ResError 响应错误
@@ -176,5 +165,16 @@ func ResError(c *gin.Context, err error, status ...int) {
 		span.Errorf(err.Error())
 	}
 
-	ResJSON(c, statusCode, schema.HTTPError{Error: errItem})
+	ResJSON(c, statusCode, schema.HTTPError{Error: errItem, RequestId: GetTraceID(c)})
+}
+
+// ResJSON 响应JSON数据
+func ResJSON(c *gin.Context, status int, v interface{}) {
+	buf, err := util.JSONMarshal(v)
+	if err != nil {
+		panic(err)
+	}
+	c.Set(ResBodyKey, buf)
+	c.Data(status, "application/json; charset=utf-8", buf)
+	c.Abort()
 }

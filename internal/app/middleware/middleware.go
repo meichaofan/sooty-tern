@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/gin-gonic/gin"
 	"sooty-tern/internal/app/errors"
 	"sooty-tern/internal/app/ginplus"
-	"github.com/gin-gonic/gin"
 )
 
 // NoMethodHandler 未找到请求方法的处理函数

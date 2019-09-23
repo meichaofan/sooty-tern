@@ -18,7 +18,7 @@ func RegisterRouter(app *gin.Engine, container *dig.Container) error {
 		g.GET("/version", func(c *gin.Context) {
 			data := make(map[string]string)
 			data["version"] = "v1"
-			ginplus.ResJSON(c, 200, data)
+			ginplus.ResOK(c, data)
 		})
 		return nil
 	})
