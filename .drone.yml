@@ -45,5 +45,4 @@ triger:
   branch:
     - master
   event:
-    - push
     - merge
