@@ -1,9 +1,10 @@
-FROM ubuntu:latest
+FROM alpine:latest
 
-COPY main /
+COPY sooty-tern /
 
 WORKDIR /
 
 EXPOSE 8080
 
-ENTRYPOINT ["/main"]
+ENTRYPOINT ["/sooty-tern"]
+CMD ["-c","configs/app.toml"]

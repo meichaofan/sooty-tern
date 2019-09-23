@@ -1,5 +1,5 @@
 kind: pipeline
-name: shop
+name: sooty-tern
 
 workspace:
   base: /root
@@ -9,7 +9,7 @@ steps:
   - name: build
     image: golang
     commands:
-      - go build cmd/server/main.go 
+      - CGO_ENABLED=0 go build -a -ldflags '-extldflags "-static"' -o sooty-tern cmd/server/main.go 
     environment:
       GOPROXY: https://goproxy.io
 
