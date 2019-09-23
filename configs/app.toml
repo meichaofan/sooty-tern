@@ -1,2 +1,107 @@
+run_mode = "debug"
+
+casbin_model_conf = ""
+
+www = ""
+
+swagger = ""
+
+store = "gorm"
+
+allow_init_menu = true
+
+enable_casbin = true
+
+# 日志配置
 [log]
-level = 1
+level = 5
+format = "json"
+output = "stdout"
+output_file = "data/ginadmin.log"
+enable_hook = false
+hook = "gorm"
+hook_max_thread = 1
+hook_max_buffer = 512
+
+[log_gorm_hook]
+db_type = "sqlite3"
+max_lifetime = 7200
+max_open_conns = 1
+max_idle_conns = 1
+table = "g_logger"
+
+[http]
+host = "0.0.0.0"
+port = 10080
+shutdown_timeout = 30
+
+[monitor]
+enable = false
+addr = "127.0.0.1:16060"
+config_dir = ""
+
+[root]
+user_name = "root"
+password = "abc-123"
+real_name = "超级管理员"
+
+[jwt_auth]
+signing_method = "HS512"
+signing_key = "GINADMIN"
+expired = 7200
+store = "file"
+file_path = "data/jwt_auth.db"
+redis_db = 10
+redis_prefix = "auth_"
+
+[captcha]
+store = "memory"
+length = 4
+width = 300
+height = 120
+redis_db = 10
+redis_prefix = "captcha_"
+
+[rate_limiter]
+enable = false
+count = 300
+redis_db = 10
+
+[cors]
+enable = false
+allow_origins = ["*"]
+allow_methods = ["GET","POST","PUT","DELETE","PATCH"]
+allow_headers = []
+allow_credentials = true
+max_age = 7200
+
+[redis]
+addr = "127.0.0.1:6379"
+password = ""
+
+[gorm]
+debug = true
+db_type = "sqlite3"
+max_lifetime = 7200
+max_open_conns = 150
+max_idle_conns = 50
+table_prefix = "g_"
+
+[mysql]
+host = "127.0.0.1"
+port= 3306
+user = "root"
+password = "123456"
+db_name = "ginadmin"
+parameters = "charset=utf8mb4&parseTime=True&loc=Local&allowNativePasswords=true"
+
+[postgres]
+host = "127.0.0.1"
+port= 5432
+user = "root"
+password = "123456"
+db_name = "ginadmin"
+sslmode = "disable"
+
+[sqlite3]
+path = "data/ginadmin.db"

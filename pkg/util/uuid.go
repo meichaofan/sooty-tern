@@ -4,18 +4,20 @@ import (
 	"github.com/google/uuid"
 )
 
+// MustUUID 创建UUID，如果发生错误则抛出panic
 func MustUUID() string {
-	u, err := newUUID()
+	v, err := NewUUID()
 	if err != nil {
 		panic(err)
 	}
-	return u
+	return v
 }
 
-func newUUID() (string, error) {
-	u, err := uuid.NewRandom()
+// NewUUID 创建UUID
+func NewUUID() (string, error) {
+	v, err := uuid.NewRandom()
 	if err != nil {
 		return "", err
 	}
-	return u.String(), nil
+	return v.String(), nil
 }
