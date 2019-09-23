@@ -12,6 +12,7 @@ steps:
       - CGO_ENABLED=0 go build -a -ldflags '-extldflags "-static"' -o sooty-tern cmd/server/main.go 
     environment:
       GOPROXY: https://goproxy.io
+      GO111MODULE: on
 
   - name: publish
     image: plugins/docker
@@ -46,4 +47,4 @@ triger:
   branch:
     - master
   event:
-    - pull_request
+    - push
