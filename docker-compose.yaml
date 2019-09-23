@@ -1,0 +1,8 @@
+version: '3.5'
+services:
+  sooty-tern:
+    image: meichaofan/sooty-tern
+    container_name: my_sooty-tern
+    ports:
+      - "10080:8080"
+

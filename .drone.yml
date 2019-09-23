@@ -1,0 +1,49 @@
+kind: pipeline
+name: shop
+
+workspace:
+  base: /root
+  path: web/sooty-tern
+
+steps:
+  - name: build
+    image: golang
+    commands:
+      - go build cmd/server/main.go 
+    environment:
+      GOPROXY: https://goproxy.io
+
+  - name: publish
+    image: plugins/docker
+    settings:
+      registry: https://index.docker.io/v1/
+      repo: meichaofan/sooty-tern
+      dockerfile: ./Dockerfile
+      Username:
+        from_secret: docker_username
+      Password:
+        from_secret: docker_password
+      tags: latest
+
+  - name: deploy
+    image: appleboy/drone-ssh
+    settings:
+      host:
+        from_secret: ssh_host
+      username:
+        from_secret: ssh_username
+      password:
+        from_secret: ssh_password
+      port:
+        from_secret: ssh_port
+      script:
+        - cd /root/web/sooty-tern
+        - docker-compose pull sooty-tern
+        - docker-compose up -d
+
+triger:
+  branch:
+    - master
+  event:
+    - push
+    - merge
