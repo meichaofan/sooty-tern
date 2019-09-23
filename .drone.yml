@@ -45,4 +45,4 @@ triger:
   branch:
     - master
   event:
-    - merge
+    - pull_request
