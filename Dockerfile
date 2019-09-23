@@ -1,9 +1,9 @@
 FROM ubuntu:latest
 
-COPY sooty-tern /
+COPY main /
 
 WORKDIR /
 
 EXPOSE 8080
 
-ENTRYPOINT ["/sooty-tern"]
+ENTRYPOINT ["/main"]
