@@ -38,6 +38,7 @@ steps:
         from_secret: ssh_port
       script:
         - cd /root/web/sooty-tern
+        - git pull
         - docker-compose pull sooty-tern
         - docker-compose up -d
 
