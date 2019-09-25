@@ -133,7 +133,12 @@ func ResList(c *gin.Context, v interface{}) {
 
 // ResOK 响应OK
 func ResOK(c *gin.Context) {
-	ResSuccess(c, schema.HTTPStatus{Status: "OK", RequestId: GetTraceID(c)})
+	data := make(map[string]bool)
+	data["success"] = true
+	r := &schema.HTTPList{
+		Data: data,
+	}
+	ResSuccess(c, schema.HTTPSucRes{Result: r, RequestId: GetTraceID(c)})
 }
 
 // ResSuccess 响应成功
@@ -142,30 +147,24 @@ func ResSuccess(c *gin.Context, v interface{}) {
 }
 
 // ResError 响应错误
-func ResError(c *gin.Context, err error, status ...int) {
-	statusCode := 500
-	errItem := schema.HTTPErrorItem{
+func ResError(c *gin.Context, err error) {
+	errItem := schema.ErrorItem{
 		Code:    500,
+		Status:  "server internal error",
 		Message: "服务器发生错误",
 	}
 
-	if errCode, ok := errors.FromErrorCode(err); ok {
-		errItem.Code = errCode.Code
-		errItem.Message = errCode.Message
-		statusCode = errCode.HTTPStatusCode
+	if err, ok := errors.FromErrorCode(err); ok {
+		errItem = err
 	}
 
-	if len(status) > 0 {
-		statusCode = status[0]
-	}
-
-	if statusCode == 500 && err != nil {
+	if errItem.Code == 500 && err != nil {
 		span := logger.StartSpan(NewContext(c))
 		span = span.WithField("stack", fmt.Sprintf("%+v", err))
 		span.Errorf(err.Error())
 	}
 
-	ResJSON(c, statusCode, schema.HTTPError{Error: errItem, RequestId: GetTraceID(c)})
+	ResJSON(c, errItem.Code, schema.HTTPErrRes{Error: errItem, RequestId: GetTraceID(c)})
 }
 
 // ResJSON 响应JSON数据

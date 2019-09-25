@@ -1,46 +1,42 @@
 package errors
 
-var (
-	codes = make(map[error]ErrorCode)
+import (
+	"net/http"
+	"sooty-tern/internal/app/schema"
 )
 
-// ErrorCode 错误码
-type ErrorCode struct {
-	Code           int
-	Message        string
-	HTTPStatusCode int
-}
+var (
+	codes = make(map[error]schema.ErrorItem)
+)
 
 // newErrorCode 设定错误码
-func newErrorCode(err error, code int, message string, status ...int) error {
-	errCode := ErrorCode{
+func newErrorItem(err error, code int, message string, status string) error {
+	errorItem := schema.ErrorItem{
 		Code:    code,
+		Status:  status,
 		Message: message,
 	}
-	if len(status) > 0 {
-		errCode.HTTPStatusCode = status[0]
-	}
-	codes[err] = errCode
+	codes[err] = errorItem
 	return err
 }
 
 // FromErrorCode 获取错误码
-func FromErrorCode(err error) (ErrorCode, bool) {
+func FromErrorCode(err error) (schema.ErrorItem, bool) {
 	v, ok := codes[err]
 	return v, ok
 }
 
 // newBadRequestError 创建请求错误
 func newBadRequestError(err error) {
-	newErrorCode(err, 400, err.Error(), 400)
+	newErrorItem(err, 400, err.Error(), http.StatusText(400));
 }
 
 // newUnauthorizedError 创建未授权错误
 func newUnauthorizedError(err error) {
-	newErrorCode(err, 401, err.Error(), 401)
+	newErrorItem(err, 401, err.Error(), http.StatusText(401));
 }
 
 // newInternalServerError 创建服务器错误
 func newInternalServerError(err error) {
-	newErrorCode(err, 500, err.Error(), 500)
+	newErrorItem(err, 500, err.Error(), http.StatusText(500))
 }

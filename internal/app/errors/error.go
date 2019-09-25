@@ -2,6 +2,7 @@ package errors
 
 import (
 	"github.com/pkg/errors"
+	"net/http"
 )
 
 // 定义错误函数的别名
@@ -47,9 +48,9 @@ func init() {
 	// 公共错误
 	newBadRequestError(ErrBadRequest)
 	newBadRequestError(ErrInvalidRequestParameter)
-	newErrorCode(ErrNotFound, 404, ErrNotFound.Error(), 404)
-	newErrorCode(ErrMethodNotAllow, 405, ErrMethodNotAllow.Error(), 405)
-	newErrorCode(ErrTooManyRequests, 429, ErrTooManyRequests.Error(), 429)
+	newErrorItem(ErrNotFound, 404, ErrNotFound.Error(), http.StatusText(404))
+	newErrorItem(ErrMethodNotAllow, 405, ErrMethodNotAllow.Error(), http.StatusText(404))
+	newErrorItem(ErrTooManyRequests, 429, ErrTooManyRequests.Error(), http.StatusText(429))
 	newBadRequestError(ErrUnknownQuery)
 	newBadRequestError(ErrInvalidParent)
 	newBadRequestError(ErrNotAllowDeleteWithChild)
@@ -57,8 +58,8 @@ func init() {
 	newBadRequestError(ErrResourceNotAllowDelete)
 
 	// 权限错误
-	newErrorCode(ErrNoPerm, 9999, ErrNoPerm.Error(), 401)
-	newErrorCode(ErrNoResourcePerm, 401, ErrNoResourcePerm.Error(), 401)
+	newErrorItem(ErrNoPerm, 401, ErrNoPerm.Error(), http.StatusText(401))
+	newErrorItem(ErrNoResourcePerm, 401, ErrNoResourcePerm.Error(), http.StatusText(401))
 
 	// 用户错误
 	newBadRequestError(ErrInvalidUserName)
