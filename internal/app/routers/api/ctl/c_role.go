@@ -57,7 +57,7 @@ func (a *Role) QueryPage(c *gin.Context) {
 		ginplus.ResError(c, err)
 		return
 	}
-	ginplus.ResPage(c, result.Data, result.PageResult)
+	ginplus.ResList(c, result.Data, result.PageResult)
 }
 
 // QuerySelect 查询选择数据
@@ -74,7 +74,7 @@ func (a *Role) QuerySelect(c *gin.Context) {
 		ginplus.ResError(c, err)
 		return
 	}
-	ginplus.ResList(c, result.Data)
+	ginplus.ResData(c, result.Data)
 }
 
 // Get 查询指定数据
@@ -94,7 +94,7 @@ func (a *Role) Get(c *gin.Context) {
 		ginplus.ResError(c, err)
 		return
 	}
-	ginplus.ResSuccess(c, item)
+	ginplus.ResData(c, item)
 }
 
 // Create 创建数据
@@ -120,7 +120,7 @@ func (a *Role) Create(c *gin.Context) {
 		return
 	}
 
-	ginplus.ResSuccess(c, nitem)
+	ginplus.ResData(c, nitem)
 }
 
 // Update 更新数据
@@ -145,7 +145,7 @@ func (a *Role) Update(c *gin.Context) {
 		ginplus.ResError(c, err)
 		return
 	}
-	ginplus.ResSuccess(c, nitem)
+	ginplus.ResData(c, nitem)
 }
 
 // Delete 删除数据

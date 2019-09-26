@@ -14,12 +14,12 @@ type ErrorItem struct {
 
 type HTTPSucRes struct {
 	Result    *HTTPList `json:"result" swaggo:"true,返回数据"`
-	RequestId string    `json:"data" swaggo:"true,请求ID"`
+	RequestId string    `json:"request_id" swaggo:"true,请求ID"`
 }
 
 // HTTPList HTTP响应列表数据
 type HTTPList struct {
-	Data       interface{}     `json:"data"`
+	Data       interface{}     `json:"data" swaggo:"true,返回数据"`
 	Pagination *HTTPPagination `json:"pagination,omitempty"`
 }
 

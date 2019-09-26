@@ -6,12 +6,12 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/gin-gonic/gin"
 	icontext "sooty-tern/internal/app/context"
 	"sooty-tern/internal/app/errors"
 	"sooty-tern/internal/app/schema"
 	"sooty-tern/pkg/logger"
 	"sooty-tern/pkg/util"
-	"github.com/gin-gonic/gin"
 )
 
 // 定义上下文中的键
@@ -111,38 +111,43 @@ func ParseJSON(c *gin.Context, obj interface{}) error {
 }
 
 // ResPage 响应分页数据
-func ResPage(c *gin.Context, v interface{}, pr *schema.PaginationResult) {
-	list := schema.HTTPList{
-		List: v,
-		Pagination: &schema.HTTPPagination{
-			Current:  GetPageIndex(c),
-			PageSize: GetPageSize(c),
+func ResList(c *gin.Context, v interface{}, pr *schema.PaginationResult) {
+	r := &schema.HTTPSucRes{
+		Result: &schema.HTTPList{
+			Data: v,
+			Pagination: &schema.HTTPPagination{
+				Current:  GetPageIndex(c),
+				PageSize: GetPageSize(c),
+			},
 		},
 	}
 	if pr != nil {
-		list.Pagination.Total = pr.Total
+		r.Result.Pagination.Total = pr.Total
 	}
-
-	ResSuccess(c, list)
+	ResSuccess(c, r)
 }
 
 // ResList 响应列表数据
-func ResList(c *gin.Context, v interface{}) {
-	ResSuccess(c, schema.HTTPList{List: v, RequestId: GetTraceID(c)})
+func ResData(c *gin.Context, v interface{}) {
+	r := &schema.HTTPSucRes{Result: &schema.HTTPList{Data: v}}
+	ResSuccess(c, r)
 }
 
 // ResOK 响应OK
 func ResOK(c *gin.Context) {
-	data := make(map[string]bool)
-	data["success"] = true
-	r := &schema.HTTPList{
-		Data: data,
+	r := &schema.HTTPSucRes{
+		Result: &schema.HTTPList{
+			Data: map[string]bool{
+				"success": true,
+			},
+		},
 	}
-	ResSuccess(c, schema.HTTPSucRes{Result: r, RequestId: GetTraceID(c)})
+	ResSuccess(c, r)
 }
 
 // ResSuccess 响应成功
-func ResSuccess(c *gin.Context, v interface{}) {
+func ResSuccess(c *gin.Context, v *schema.HTTPSucRes) {
+	v.RequestId = GetTraceID(c)
 	ResJSON(c, http.StatusOK, v)
 }
 

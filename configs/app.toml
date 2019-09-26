@@ -15,7 +15,7 @@ enable_casbin = true
 # 日志配置
 [log]
 level = 5
-format = "json"
+format = "text"
 output = "stdout"
 output_file = "data/ginadmin.log"
 enable_hook = false

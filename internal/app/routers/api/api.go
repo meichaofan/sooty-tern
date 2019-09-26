@@ -5,6 +5,7 @@ import (
 	"go.uber.org/dig"
 	"sooty-tern/internal/app/ginplus"
 	"sooty-tern/internal/app/routers/api/ctl"
+	"sooty-tern/internal/app/schema"
 )
 
 // RegisterRouter 注册/api路由
@@ -18,8 +19,20 @@ func RegisterRouter(app *gin.Engine, container *dig.Container) error {
 		g.GET("/version", func(c *gin.Context) {
 			data := make(map[string]string)
 			data["version"] = "v1"
-			ginplus.ResOK(c, data)
+			ginplus.ResData(c, data)
 		})
+
+		g.GET("/listUser", func(c *gin.Context) {
+			d := map[string]string{
+				"name": "meichaofan",
+				"sex":  "boy",
+			}
+			pr := &schema.PaginationResult{
+				Total: 12,
+			}
+			ginplus.ResList(c, d, pr)
+		})
+
 		return nil
 	})
 }

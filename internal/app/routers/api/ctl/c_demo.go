@@ -60,7 +60,7 @@ func (a *Demo) QueryPage(c *gin.Context) {
 		return
 	}
 
-	ginplus.ResPage(c, result.Data, result.PageResult)
+	ginplus.ResList(c, result.Data, result.PageResult)
 }
 
 // Get 查询指定数据
@@ -78,7 +78,7 @@ func (a *Demo) Get(c *gin.Context) {
 		ginplus.ResError(c, err)
 		return
 	}
-	ginplus.ResSuccess(c, item)
+	ginplus.ResData(c, item)
 }
 
 // Create 创建数据
@@ -103,7 +103,7 @@ func (a *Demo) Create(c *gin.Context) {
 		ginplus.ResError(c, err)
 		return
 	}
-	ginplus.ResSuccess(c, nitem)
+	ginplus.ResData(c, nitem)
 }
 
 // Update 更新数据
@@ -128,7 +128,7 @@ func (a *Demo) Update(c *gin.Context) {
 		ginplus.ResError(c, err)
 		return
 	}
-	ginplus.ResSuccess(c, nitem)
+	ginplus.ResData(c, nitem)
 }
 
 // Delete 删除数据

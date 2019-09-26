@@ -70,7 +70,7 @@ func (a *Menu) QueryPage(c *gin.Context) {
 		ginplus.ResError(c, err)
 		return
 	}
-	ginplus.ResPage(c, result.Data, result.PageResult)
+	ginplus.ResList(c, result.Data, result.PageResult)
 }
 
 // QueryTree 查询菜单树
@@ -93,7 +93,7 @@ func (a *Menu) QueryTree(c *gin.Context) {
 		return
 	}
 
-	ginplus.ResList(c, result.Data.ToTrees().ToTree())
+	ginplus.ResData(c, result.Data.ToTrees().ToTree())
 }
 
 // Get 查询指定数据
@@ -114,7 +114,7 @@ func (a *Menu) Get(c *gin.Context) {
 		ginplus.ResError(c, err)
 		return
 	}
-	ginplus.ResSuccess(c, item)
+	ginplus.ResData(c, item)
 }
 
 // Create 创建数据
@@ -139,7 +139,7 @@ func (a *Menu) Create(c *gin.Context) {
 		ginplus.ResError(c, err)
 		return
 	}
-	ginplus.ResSuccess(c, nitem)
+	ginplus.ResData(c, nitem)
 }
 
 // Update 更新数据
@@ -164,7 +164,7 @@ func (a *Menu) Update(c *gin.Context) {
 		ginplus.ResError(c, err)
 		return
 	}
-	ginplus.ResSuccess(c, nitem)
+	ginplus.ResData(c, nitem)
 }
 
 // Delete 删除数据

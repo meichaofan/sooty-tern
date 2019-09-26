@@ -35,7 +35,7 @@ func (a *Login) GetCaptcha(c *gin.Context) {
 		ginplus.ResError(c, err)
 		return
 	}
-	ginplus.ResSuccess(c, item)
+	ginplus.ResData(c, item)
 }
 
 // ResCaptcha 响应图形验证码
@@ -103,7 +103,7 @@ func (a *Login) Login(c *gin.Context) {
 	}
 
 	logger.StartSpan(ginplus.NewContext(c), logger.SetSpanTitle("用户登录"), logger.SetSpanFuncName("Login")).Infof("登入系统")
-	ginplus.ResSuccess(c, tokenInfo)
+	ginplus.ResData(c, tokenInfo)
 }
 
 // Logout 用户登出
@@ -137,7 +137,7 @@ func (a *Login) RefreshToken(c *gin.Context) {
 		ginplus.ResError(c, err)
 		return
 	}
-	ginplus.ResSuccess(c, tokenInfo)
+	ginplus.ResData(c, tokenInfo)
 }
 
 // GetUserInfo 获取当前用户信息
@@ -153,7 +153,7 @@ func (a *Login) GetUserInfo(c *gin.Context) {
 		ginplus.ResError(c, err)
 		return
 	}
-	ginplus.ResSuccess(c, info)
+	ginplus.ResData(c, info)
 }
 
 // QueryUserMenuTree 查询当前用户菜单树
@@ -169,7 +169,7 @@ func (a *Login) QueryUserMenuTree(c *gin.Context) {
 		ginplus.ResError(c, err)
 		return
 	}
-	ginplus.ResList(c, menus)
+	ginplus.ResData(c, menus)
 }
 
 // UpdatePassword 更新个人密码
