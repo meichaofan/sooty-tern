@@ -26,6 +26,7 @@ func LoggerMiddleware(skipper ...SkipperFunc) gin.HandlerFunc {
 		start := time.Now()
 
 		fields := make(map[string]interface{})
+		fields["path"] = p
 		fields["remote_addr"] = c.ClientIP()
 		fields["method"] = method
 		fields["url"] = c.Request.URL.String()
@@ -52,13 +53,14 @@ func LoggerMiddleware(skipper ...SkipperFunc) gin.HandlerFunc {
 		cost := time.Since(start).Nanoseconds() / 1e6
 		fields["status_code"] = c.Writer.Status()
 		fields["res_length"] = c.Writer.Size()
+		fields["cost"] = cost
 		if v, ok := c.Get(ginplus.ResBodyKey); ok {
 			if b, ok := v.([]byte); ok {
-				fields["res_body"] = string(b)
+				fields["response"] = string(b)
 			}
 		}
 		fields[logger.UserIDKey] = ginplus.GetUserID(c)
-		span.WithFields(fields).Infof("[http] %s-%s-%s-%d(%dms)",
-			p, c.Request.Method, c.ClientIP(), c.Writer.Status(), cost)
+		span.WithFields(fields).Infof("[request_id=%s]",
+			ginplus.GetTraceID(c))
 	}
 }

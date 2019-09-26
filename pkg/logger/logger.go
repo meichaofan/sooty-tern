@@ -172,7 +172,6 @@ func StartSpan(ctx context.Context, opts ...SpanOption) *Entry {
 	fields := map[string]interface{}{
 		StartedAtKey:    time.Now(),
 		UserIDKey:       FromUserIDContext(ctx),
-		TraceIDKey:      FromTraceIDContext(ctx),
 		SpanIDKey:       FromSpanIDContext(ctx),
 		SpanTitleKey:    o.Title,
 		SpanFunctionKey: o.FuncName,
@@ -250,7 +249,6 @@ func (e *Entry) WithFields(fields map[string]interface{}) *Entry {
 	e.checkAndDelete(
 		fields,
 		StartedAtKey,
-		TraceIDKey,
 		SpanIDKey,
 		SpanTitleKey,
 		SpanFunctionKey,

@@ -51,7 +51,7 @@ func InitHTTPServer(ctx context.Context, container *dig.Container) func() {
 	}
 
 	go func() {
-		logger.Printf(ctx, "HTTP服务开始启动，地址监听在：[%s]", addr)
+		logger.Printf(ctx, "HTTP server is running , listen port on：[%s]", addr)
 		err := srv.ListenAndServe()
 		if err != nil && err != http.ErrServerClosed {
 			logger.Errorf(ctx, err.Error())

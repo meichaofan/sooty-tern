@@ -48,7 +48,7 @@ func Init(ctx context.Context, opts ...Option) func() {
 
 	cfg := config.GetGlobalConfig()
 
-	logger.Printf(ctx, "service started , run mode：%s , 版本号：%s , 进程号：%d\n", cfg.RunMode, o.Version, os.Getpid())
+	logger.Printf(ctx, "service started , run mode：%s , version：%s , process id：%d\n", cfg.RunMode, o.Version, os.Getpid())
 
 	loggerCall, err := InitLogger()
 	handleError(err)
