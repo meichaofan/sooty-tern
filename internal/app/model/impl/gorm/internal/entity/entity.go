@@ -3,35 +3,33 @@ package entity
 import (
 	"context"
 	"fmt"
-	"sooty-tern/pkg/gormplus"
+	"github.com/jinzhu/gorm"
+	"sooty-tern/internal/app/config"
+	icontext "sooty-tern/internal/app/context"
 	"sooty-tern/pkg/util"
 	"time"
-
-	icontext "sooty-tern/internal/app/context"
 )
 
-// 表名前缀
+//表名前缀
 var tablePrefix string
 
-// SetTablePrefix 设定表名前缀
 func SetTablePrefix(prefix string) {
 	tablePrefix = prefix
 }
 
-// GetTablePrefix 获取表名前缀
 func GetTablePrefix() string {
 	return tablePrefix
 }
 
 // Model base model
 type Model struct {
-	ID        uint       `gorm:"column:id;primary_key;auto_increment;"`
+	ID        int        `gorm:"column:id;primary_key;auto_increment;"`
 	CreatedAt time.Time  `gorm:"column:created_at;"`
 	UpdatedAt time.Time  `gorm:"column:updated_at;"`
-	DeletedAt *time.Time `gorm:"column:deleted_at;index;"`
+	DeletedAt *time.Time `gorm:"column:deleted_at;"`
 }
 
-// TableName table name
+// table name
 func (Model) TableName(name string) string {
 	return fmt.Sprintf("%s%s", GetTablePrefix(), name)
 }
@@ -40,17 +38,23 @@ func toString(v interface{}) string {
 	return util.JSONMarshalToString(v)
 }
 
-func getDB(ctx context.Context, defDB *gormplus.DB) *gormplus.DB {
+func getDB(ctx context.Context, defDB *gorm.DB) *gorm.DB {
 	trans, ok := icontext.FromTrans(ctx)
 	if ok {
-		db, ok := trans.(*gormplus.DB)
+		db, ok := trans.(*gorm.DB)
 		if ok {
+			if icontext.FromTransLock(ctx) {
+				if dbType := config.GetGlobalConfig().Gorm.DBType; dbType == "mysql" ||
+					dbType == "postgres" {
+					db = db.Set("gorm:query_option", "FOR UPDATE")
+				}
+			}
 			return db
 		}
 	}
 	return defDB
 }
 
-func getDBWithModel(ctx context.Context, defDB *gormplus.DB, m interface{}) *gormplus.DB {
-	return gormplus.Wrap(getDB(ctx, defDB).Model(m))
+func getDBWithModel(ctx context.Context, defDB *gorm.DB, m interface{}) *gorm.DB {
+	return getDB(ctx, defDB).Model(m)
 }

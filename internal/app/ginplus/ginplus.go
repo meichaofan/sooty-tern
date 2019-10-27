@@ -16,13 +16,10 @@ import (
 
 // 定义上下文中的键
 const (
-	prefix = "ginadmin"
-	// UserIDKey 存储上下文中的键(用户ID)
-	UserIDKey = prefix + "/user_id"
-	// TraceIDKey 存储上下文中的键(跟踪ID)
-	TraceIDKey = prefix + "/trace_id"
-	// ResBodyKey 存储上下文中的键(响应Body数据)
-	ResBodyKey = prefix + "/res_body"
+	prefix     = "sooty_tern"
+	UserIDKey  = prefix + "/user_id"  // UserIDKey 存储上下文中的键(用户ID)
+	TraceIDKey = prefix + "/trace_id" // TraceIDKey 存储上下文中的键(跟踪ID)
+	ResBodyKey = prefix + "/res_body" // ResBodyKey 存储上下文中的键(响应Body数据)
 )
 
 // NewContext 封装上线文入口
@@ -53,10 +50,10 @@ func GetToken(c *gin.Context) string {
 	return token
 }
 
-// GetPageIndex 获取分页的页索引
-func GetPageIndex(c *gin.Context) int {
+// GetPageNumber 获取分页的页索引
+func GetPageNumber(c *gin.Context) int {
 	defaultVal := 1
-	if v := c.Query("current"); v != "" {
+	if v := c.Query("pageNumber"); v != "" {
 		if iv := util.S(v).DefaultInt(defaultVal); iv > 0 {
 			return iv
 		}
@@ -78,11 +75,11 @@ func GetPageSize(c *gin.Context) int {
 	return defaultVal
 }
 
-// GetPaginationParam 获取分页查询参数
-func GetPaginationParam(c *gin.Context) *schema.PaginationParam {
-	return &schema.PaginationParam{
-		PageIndex: GetPageIndex(c),
-		PageSize:  GetPageSize(c),
+// GetPageParam 获取分页查询参数
+func GetPageParam(c *gin.Context) *schema.PageParam {
+	return &schema.PageParam{
+		PageNumber: GetPageNumber(c),
+		PageSize:   GetPageSize(c),
 	}
 }
 
@@ -110,50 +107,46 @@ func ParseJSON(c *gin.Context, obj interface{}) error {
 	return nil
 }
 
-// ResPage 响应分页数据
-func ResList(c *gin.Context, v interface{}, pr *schema.PaginationResult) {
+// ResList	响应分页数据
+func ResList(c *gin.Context, v interface{}, pi *schema.PageInfo) {
 	r := &schema.HTTPSucRes{
 		Result: &schema.HTTPList{
-			Data: v,
-			Pagination: &schema.HTTPPagination{
-				Current:  GetPageIndex(c),
-				PageSize: GetPageSize(c),
-			},
+			Data:       v,
+			PageSize:   pi.PageSize,
+			PageNumber: pi.PageNumber,
+			Total:      pi.Total,
 		},
 	}
-	if pr != nil {
-		r.Result.Pagination.Total = pr.Total
-	}
-	ResSuccess(c, r)
+	resSuccess(c, r)
 }
 
-// ResList 响应列表数据
-func ResData(c *gin.Context, v interface{}) {
-	r := &schema.HTTPSucRes{Result: &schema.HTTPList{Data: v}}
-	ResSuccess(c, r)
+// ResDetail 响应详情
+func ResDetail(c *gin.Context, v interface{}) {
+	r := &schema.HTTPSucRes{
+		Result: &schema.HTTPDetail{
+			Data: v,
+		},
+	}
+	resSuccess(c, r)
 }
 
 // ResOK 响应OK
 func ResOK(c *gin.Context) {
 	r := &schema.HTTPSucRes{
-		Result: &schema.HTTPList{
-			Data: map[string]bool{
-				"success": true,
-			},
-		},
+		Result: map[string]bool{"success": true},
 	}
-	ResSuccess(c, r)
+	resSuccess(c, r)
 }
 
 // ResSuccess 响应成功
-func ResSuccess(c *gin.Context, v *schema.HTTPSucRes) {
+func resSuccess(c *gin.Context, v *schema.HTTPSucRes) {
 	v.RequestId = GetTraceID(c)
-	ResJSON(c, http.StatusOK, v)
+	resJSON(c, http.StatusOK, v)
 }
 
 // ResError 响应错误
 func ResError(c *gin.Context, err error) {
-	errItem := schema.ErrorItem{
+	errItem := &schema.ErrorItem{
 		Code:    500,
 		Status:  "server internal error",
 		Message: "服务器发生错误",
@@ -169,11 +162,11 @@ func ResError(c *gin.Context, err error) {
 		span.Errorf(err.Error())
 	}
 
-	ResJSON(c, errItem.Code, schema.HTTPErrRes{Error: errItem, RequestId: GetTraceID(c)})
+	resJSON(c, errItem.Code, schema.HTTPErrRes{Error: errItem, RequestId: GetTraceID(c)})
 }
 
 // ResJSON 响应JSON数据
-func ResJSON(c *gin.Context, status int, v interface{}) {
+func resJSON(c *gin.Context, status int, v interface{}) {
 	buf, err := util.JSONMarshal(v)
 	if err != nil {
 		panic(err)

@@ -1,4 +1,4 @@
-# :hammer: dig [![GoDoc][doc-img]][doc] [![GitHub release][release-img]][release] [![Build Status][ci-img]][ci] [![Coverage Status][cov-img]][cov] [![Go Report Card][report-card-img]][report-card]
+# :hammer_and_pick: dig [![GoDoc][doc-img]][doc] [![GitHub release][release-img]][release] [![Build Status][ci-img]][ci] [![Coverage Status][cov-img]][cov] [![Go Report Card][report-card-img]][report-card]
 
 A reflection based dependency injection toolkit for Go.
 
@@ -15,10 +15,13 @@ A reflection based dependency injection toolkit for Go.
 
 ## Installation
 
-We recommend locking to [SemVer](http://semver.org/) range `^1` using [Glide](https://github.com/Masterminds/glide):
+We recommend consuming [SemVer](http://semver.org/) major version `1` using
+your dependency manager of choice.
 
 ```
-glide get 'go.uber.org/dig#^1'
+$ glide get 'go.uber.org/dig#^1'
+$ dep ensure -add "go.uber.org/dig@v1"
+$ go get 'go.uber.org/dig@v1'
 ```
 
 ## Stability
@@ -34,7 +37,7 @@ No breaking changes will be made to exported APIs before `v2.0.0`.
 [release]: https://github.com/uber-go/dig/releases
 
 [ci-img]: https://img.shields.io/travis/uber-go/dig/master.svg
-[ci]: https://travis-ci.org/uber-go/dig/branches
+[ci]: https://travis-ci.com/uber-go/dig/branches
 
 [cov-img]: https://codecov.io/gh/uber-go/dig/branch/master/graph/badge.svg
 [cov]: https://codecov.io/gh/uber-go/dig/branch/master

@@ -151,12 +151,13 @@ type Redis struct {
 
 // Gorm gorm配置参数
 type Gorm struct {
-	Debug        bool   `toml:"debug"`
-	DBType       string `toml:"db_type"`
-	MaxLifetime  int    `toml:"max_lifetime"`
-	MaxOpenConns int    `toml:"max_open_conns"`
-	MaxIdleConns int    `toml:"max_idle_conns"`
-	TablePrefix  string `toml:"table_prefix"`
+	Debug             bool   `toml:"debug"`
+	DBType            string `toml:"db_type"`
+	MaxLifetime       int    `toml:"max_lifetime"`
+	MaxOpenConns      int    `toml:"max_open_conns"`
+	MaxIdleConns      int    `toml:"max_idle_conns"`
+	TablePrefix       string `toml:"table_prefix"`
+	EnableAutoMigrate bool   `toml:"enable_auto_migrate"`
 }
 
 // MySQL mysql配置参数

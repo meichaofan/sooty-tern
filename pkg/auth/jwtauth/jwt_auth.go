@@ -7,7 +7,7 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
-const defaultKey = "GINADMIN"
+const defaultKey = "SOOTY-TERN"
 
 var defaultOptions = options{
 	tokenType:     "Bearer",
@@ -35,7 +35,7 @@ type Option func(*options)
 
 // SetSigningMethod 设定签名方式
 func SetSigningMethod(method jwt.SigningMethod) Option {
-	return func(o *options) {
+		return func(o *options) {
 		o.signingMethod = method
 	}
 }

@@ -1,18 +1,6 @@
 run_mode = "debug"
-
-casbin_model_conf = ""
-
-www = ""
-
-swagger = ""
-
 store = "gorm"
 
-allow_init_menu = true
-
-enable_casbin = true
-
-# 日志配置
 [log]
 level = 5
 format = "text"
@@ -35,11 +23,6 @@ host = "0.0.0.0"
 port = 8080
 shutdown_timeout = 30
 
-[monitor]
-enable = false
-addr = "127.0.0.1:16060"
-config_dir = ""
-
 [root]
 user_name = "root"
 password = "abc-123"
@@ -47,20 +30,12 @@ real_name = "超级管理员"
 
 [jwt_auth]
 signing_method = "HS512"
-signing_key = "GINADMIN"
+signing_key = "SOOTY-TERN"
 expired = 7200
 store = "file"
 file_path = "data/jwt_auth.db"
 redis_db = 10
 redis_prefix = "auth_"
-
-[captcha]
-store = "memory"
-length = 4
-width = 300
-height = 120
-redis_db = 10
-redis_prefix = "captcha_"
 
 [rate_limiter]
 enable = false
@@ -76,32 +51,21 @@ allow_credentials = true
 max_age = 7200
 
 [redis]
-addr = "127.0.0.1:6379"
+addr = "192.168.136.130:6379"
 password = ""
 
 [gorm]
 debug = true
-db_type = "sqlite3"
+db_type = "mysql"
 max_lifetime = 7200
 max_open_conns = 150
 max_idle_conns = 50
-table_prefix = "g_"
+table_prefix = "lz_"
 
 [mysql]
-host = "127.0.0.1"
+host = "192.168.136.130"
 port= 3306
 user = "root"
-password = "123456"
-db_name = "ginadmin"
+password = "root"
+db_name = "lvzhou"
 parameters = "charset=utf8mb4&parseTime=True&loc=Local&allowNativePasswords=true"
-
-[postgres]
-host = "127.0.0.1"
-port= 5432
-user = "root"
-password = "123456"
-db_name = "ginadmin"
-sslmode = "disable"
-
-[sqlite3]
-path = "data/ginadmin.db"

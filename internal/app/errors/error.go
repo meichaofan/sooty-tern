@@ -2,7 +2,6 @@ package errors
 
 import (
 	"github.com/pkg/errors"
-	"net/http"
 )
 
 // 定义错误函数的别名
@@ -46,29 +45,34 @@ var (
 
 func init() {
 	// 公共错误
+	//400
 	newBadRequestError(ErrBadRequest)
 	newBadRequestError(ErrInvalidRequestParameter)
-	newErrorItem(ErrNotFound, 404, ErrNotFound.Error(), http.StatusText(404))
-	newErrorItem(ErrMethodNotAllow, 405, ErrMethodNotAllow.Error(), http.StatusText(404))
-	newErrorItem(ErrTooManyRequests, 429, ErrTooManyRequests.Error(), http.StatusText(429))
 	newBadRequestError(ErrUnknownQuery)
 	newBadRequestError(ErrInvalidParent)
 	newBadRequestError(ErrNotAllowDeleteWithChild)
 	newBadRequestError(ErrResourceExists)
 	newBadRequestError(ErrResourceNotAllowDelete)
 
-	// 权限错误
-	newErrorItem(ErrNoPerm, 401, ErrNoPerm.Error(), http.StatusText(401))
-	newErrorItem(ErrNoResourcePerm, 401, ErrNoResourcePerm.Error(), http.StatusText(401))
+	//401
+	newUnauthorizedError(ErrNoPerm)
+	newUnauthorizedError(ErrNoResourcePerm)
 
-	// 用户错误
+	//404
+	newNotFoundError(ErrNotFound)
+
+	//405
+	newMethodNotAllowError(ErrMethodNotAllow)
+
+	//429
+	newTooManyRequestsError(ErrTooManyRequests)
+
+	// 业务
 	newBadRequestError(ErrInvalidUserName)
 	newBadRequestError(ErrInvalidPassword)
 	newBadRequestError(ErrInvalidUser)
 	newBadRequestError(ErrUserDisable)
 	newBadRequestError(ErrUserNotEmptyPwd)
-
-	// login
 	newBadRequestError(ErrLoginNotAllowModifyPwd)
 	newBadRequestError(ErrLoginInvalidOldPwd)
 	newBadRequestError(ErrLoginInvalidVerifyCode)

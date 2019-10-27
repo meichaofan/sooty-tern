@@ -4,11 +4,11 @@ import (
 	"errors"
 	"os"
 	"path/filepath"
-	"sooty-tern/internal/app/config"
-	"sooty-tern/internal/app/model/impl/gorm"
-	"sooty-tern/pkg/gormplus"
 
+	"github.com/jinzhu/gorm"
 	"go.uber.org/dig"
+	"sooty-tern/internal/app/config"
+	igorm "sooty-tern/internal/app/model/impl/gorm"
 )
 
 // InitStore 初始化存储
@@ -27,33 +27,34 @@ func InitStore(container *dig.Container) (func(), error) {
 			db.Close()
 		}
 
-		gorm.SetTablePrefix(cfg.Gorm.TablePrefix)
-		err = gorm.AutoMigrate(db)
-		if err != nil {
-			return nil, err
+		igorm.SetTablePrefix(cfg.Gorm.TablePrefix)
+
+		if cfg.Gorm.EnableAutoMigrate {
+			err = igorm.AutoMigrate(db)
+			if err != nil {
+				return nil, err
+			}
 		}
 
 		// 注入DB
-		container.Provide(func() *gormplus.DB {
+		container.Provide(func() *gorm.DB {
 			return db
 		})
+		igorm.Inject(container)
 
-		gorm.Inject(container)
 	default:
 		return nil, errors.New("unknown store")
 	}
-
 	return storeCall, nil
 }
 
-// initGorm 实例化gorm存储
-func initGorm() (*gormplus.DB, error) {
+func initGorm() (*gorm.DB, error) {
 	cfg := config.GetGlobalConfig()
-
 	var dsn string
 	switch cfg.Gorm.DBType {
 	case "mysql":
 		dsn = cfg.MySQL.DSN()
+		print(dsn)
 	case "sqlite3":
 		dsn = cfg.Sqlite3.DSN()
 		os.MkdirAll(filepath.Dir(dsn), 0777)
@@ -63,12 +64,12 @@ func initGorm() (*gormplus.DB, error) {
 		return nil, errors.New("unknown db")
 	}
 
-	return gormplus.New(&gormplus.Config{
-		Debug:        cfg.Gorm.Debug,
-		DBType:       cfg.Gorm.DBType,
-		DSN:          dsn,
-		MaxIdleConns: cfg.Gorm.MaxIdleConns,
-		MaxLifetime:  cfg.Gorm.MaxLifetime,
-		MaxOpenConns: cfg.Gorm.MaxOpenConns,
+	return igorm.NewDB(&igorm.Config{
+		Debug:       cfg.Gorm.Debug,
+		DBType:      cfg.Gorm.DBType,
+		DSN:         dsn,
+		MaxIdleCons: cfg.Gorm.MaxIdleConns,
+		MaxLifeTime: cfg.Gorm.MaxLifetime,
+		MaxOpenCons: cfg.Gorm.MaxOpenConns,
 	})
 }

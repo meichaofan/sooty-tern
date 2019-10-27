@@ -1,42 +1,43 @@
 package schema
 
-// ---------------------------------------------------------------
+// 异常返回定义
 type HTTPErrRes struct {
-	Error     ErrorItem `json:"error" swaggo:"true,错误信息"`
-	RequestId string    `json:"request_id" swaggo:"true,请求ID"`
+	Error     *ErrorItem `json:"error"`
+	RequestId string     `json:"request_id"`
 }
 
 type ErrorItem struct {
-	Code    int    `json:"code" swaggo:"true,状态码"`
-	Status  string `json:"status" swaggo:"true,状态"`
-	Message string `json:"message" swaggo:"错误描述"`
+	Code    int    `json:"code"`
+	Status  string `json:"status"`
+	Message string `json:"message"`
 }
 
+// 正常返回定义
 type HTTPSucRes struct {
-	Result    *HTTPList `json:"result" swaggo:"true,返回数据"`
-	RequestId string    `json:"request_id" swaggo:"true,请求ID"`
+	Result    interface{} `json:"result"`
+	RequestId string      `json:"request_id"`
 }
 
-// HTTPList HTTP响应列表数据
+type HTTPDetail struct {
+	Data interface{} `json:"data"`
+}
+
 type HTTPList struct {
-	Data       interface{}     `json:"data" swaggo:"true,返回数据"`
-	Pagination *HTTPPagination `json:"pagination,omitempty"`
+	Data       interface{} `json:"data"`
+	PageNumber int         `json:"pageNumber"`
+	PageSize   int         `json:"pageSize"`
+	Total      int         `json:"total"`
 }
 
-// HTTPPagination HTTP分页数据
-type HTTPPagination struct {
-	Total    int `json:"total"`
-	Current  int `json:"current"`
-	PageSize int `json:"pageSize"`
+//分页查询信息
+type PageParam struct {
+	PageNumber int `json:"pageNumber"`
+	PageSize   int `json:"pageSize"`
 }
 
-// PaginationParam 分页查询条件
-type PaginationParam struct {
-	PageIndex int // 页索引
-	PageSize  int // 页大小
-}
-
-// PaginationResult 分页查询结果
-type PaginationResult struct {
-	Total int // 总数据条数
+//分页结果信息
+type PageInfo struct {
+	PageNumber int `json:"pageNumber"`
+	PageSize   int `json:"pageSize"`
+	Total      int `json:"total"`
 }

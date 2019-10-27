@@ -4,6 +4,7 @@ import (
 	"context"
 	"os"
 	"sooty-tern/internal/app/config"
+	"sooty-tern/internal/app/service/impl"
 	"sooty-tern/pkg/logger"
 
 	"go.uber.org/dig"
@@ -53,13 +54,8 @@ func Init(ctx context.Context, opts ...Option) func() {
 	loggerCall, err := InitLogger()
 	handleError(err)
 
-	err = InitMonitor()
-	if err != nil {
-		logger.Errorf(ctx, err.Error())
-	}
-
 	// 创建依赖注入容器
-	container := dig.New()
+	container,containerCall  := BuildContainer()
 
 	// init http server
 	httpCall := InitHTTPServer(ctx, container)
@@ -67,8 +63,27 @@ func Init(ctx context.Context, opts ...Option) func() {
 		if httpCall != nil {
 			httpCall()
 		}
+		if containerCall != nil {
+			containerCall()
+		}
 		if loggerCall != nil {
 			loggerCall()
+		}
+	}
+}
+
+func BuildContainer() (*dig.Container, func()) {
+	// 创建依赖注入容器
+	container := dig.New()
+	// inject service
+	err := impl.Inject(container)
+	handleError(err)
+	// inject storage
+	storeCall, err := InitStore(container)
+	handleError(err)
+	return container, func() {
+		if storeCall != nil {
+			storeCall()
 		}
 	}
 }

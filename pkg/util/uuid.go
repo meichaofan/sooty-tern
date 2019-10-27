@@ -21,3 +21,12 @@ func NewUUID() (string, error) {
 	}
 	return v.String(), nil
 }
+
+// NewRecordId
+func NewRecordId() string {
+	recordId, err := NewUUID()
+	if err != nil {
+		return ""
+	}
+	return recordId[:8]
+}

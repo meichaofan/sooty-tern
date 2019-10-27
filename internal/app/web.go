@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"sooty-tern/internal/app/config"
 	"sooty-tern/internal/app/middleware"
-	"sooty-tern/internal/app/routers/api"
+	"sooty-tern/internal/app/routers"
 	"sooty-tern/pkg/logger"
 	"time"
 
@@ -32,7 +32,7 @@ func InitWeb(container *dig.Container) *gin.Engine {
 	app.Use(middleware.LoggerMiddleware(middleware.AllowPathPrefixNoSkipper(apiPrefixes...)))
 
 	// 注册/api路由
-	err := api.RegisterRouter(app, container)
+	err := routers.RegisterRouter(app, container)
 	handleError(err)
 
 	return app
