@@ -61,6 +61,12 @@ type Config struct {
 	MySQL           MySQL       `toml:"mysql"`
 	Postgres        Postgres    `toml:"postgres"`
 	Sqlite3         Sqlite3     `toml:"sqlite3"`
+	Wechat          Wechat      `toml:"wechat"`
+}
+
+type Wechat struct {
+	AppId     string `toml:"app_id"`
+	AppSecret string `toml:"app_secret"`
 }
 
 // Log 日志配置参数

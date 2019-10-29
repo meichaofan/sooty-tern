@@ -2,9 +2,6 @@ package app
 
 import (
 	"errors"
-	"os"
-	"path/filepath"
-
 	"github.com/jinzhu/gorm"
 	"go.uber.org/dig"
 	"sooty-tern/internal/app/config"
@@ -54,12 +51,6 @@ func initGorm() (*gorm.DB, error) {
 	switch cfg.Gorm.DBType {
 	case "mysql":
 		dsn = cfg.MySQL.DSN()
-		print(dsn)
-	case "sqlite3":
-		dsn = cfg.Sqlite3.DSN()
-		os.MkdirAll(filepath.Dir(dsn), 0777)
-	case "postgres":
-		dsn = cfg.Postgres.DSN()
 	default:
 		return nil, errors.New("unknown db")
 	}

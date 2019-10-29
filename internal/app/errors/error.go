@@ -38,6 +38,7 @@ var (
 	ErrUserNotEmptyPwd = New("密码不允许为空")
 
 	// login
+	ErrRegister               = New("注册失败")
 	ErrLoginNotAllowModifyPwd = New("不允许修改密码")
 	ErrLoginInvalidOldPwd     = New("旧密码不正确")
 	ErrLoginInvalidVerifyCode = New("无效的验证码")
@@ -73,6 +74,7 @@ func init() {
 	newBadRequestError(ErrInvalidUser)
 	newBadRequestError(ErrUserDisable)
 	newBadRequestError(ErrUserNotEmptyPwd)
+	newBadRequestError(ErrRegister)
 	newBadRequestError(ErrLoginNotAllowModifyPwd)
 	newBadRequestError(ErrLoginInvalidOldPwd)
 	newBadRequestError(ErrLoginInvalidVerifyCode)

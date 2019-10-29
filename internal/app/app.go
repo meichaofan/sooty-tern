@@ -2,12 +2,12 @@ package app
 
 import (
 	"context"
+	"go.uber.org/dig"
 	"os"
 	"sooty-tern/internal/app/config"
 	"sooty-tern/internal/app/service/impl"
+	"sooty-tern/pkg/auth"
 	"sooty-tern/pkg/logger"
-
-	"go.uber.org/dig"
 )
 
 type options struct {
@@ -55,7 +55,7 @@ func Init(ctx context.Context, opts ...Option) func() {
 	handleError(err)
 
 	// 创建依赖注入容器
-	container,containerCall  := BuildContainer()
+	container, containerCall := BuildContainer()
 
 	// init http server
 	httpCall := InitHTTPServer(ctx, container)
@@ -81,6 +81,13 @@ func BuildContainer() (*dig.Container, func()) {
 	// inject storage
 	storeCall, err := InitStore(container)
 	handleError(err)
+	// inject auth
+	authentication, err := InitAuth()
+	handleError(err)
+	_ = container.Provide(func() auth.Auth {
+		return authentication
+	})
+
 	return container, func() {
 		if storeCall != nil {
 			storeCall()

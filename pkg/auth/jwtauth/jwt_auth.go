@@ -7,14 +7,14 @@ import (
 	jwt "github.com/dgrijalva/jwt-go"
 )
 
-const defaultKey = "SOOTY-TERN"
+const defaultKey = "SOOTY_TERN"
 
 var defaultOptions = options{
 	tokenType:     "Bearer",
 	expired:       7200,
 	signingMethod: jwt.SigningMethodHS512,
 	signingKey:    defaultKey,
-	keyfunc: func(t *jwt.Token) (interface{}, error) {
+	keyFunc: func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, auth.ErrInvalidToken
 		}
@@ -25,7 +25,7 @@ var defaultOptions = options{
 type options struct {
 	signingMethod jwt.SigningMethod
 	signingKey    interface{}
-	keyfunc       jwt.Keyfunc
+	keyFunc       jwt.Keyfunc
 	expired       int
 	tokenType     string
 }
@@ -35,7 +35,7 @@ type Option func(*options)
 
 // SetSigningMethod 设定签名方式
 func SetSigningMethod(method jwt.SigningMethod) Option {
-		return func(o *options) {
+	return func(o *options) {
 		o.signingMethod = method
 	}
 }
@@ -47,10 +47,10 @@ func SetSigningKey(key interface{}) Option {
 	}
 }
 
-// SetKeyfunc 设定验证key的回调函数
-func SetKeyfunc(keyFunc jwt.Keyfunc) Option {
+// SetKeyFunc 设定验证key的回调函数
+func SetKeyFunc(keyFunc jwt.Keyfunc) Option {
 	return func(o *options) {
-		o.keyfunc = keyFunc
+		o.keyFunc = keyFunc
 	}
 }
 
@@ -62,25 +62,26 @@ func SetExpired(expired int) Option {
 }
 
 // New 创建认证实例
-func New(store Storer, opts ...Option) *JWTAuth {
+func New(store Store, opts ...Option) *JWTAuth {
 	o := defaultOptions
 	for _, opt := range opts {
 		opt(&o)
 	}
 
 	return &JWTAuth{
-		opts: &o,
+		opts:  &o,
+		store: store,
 	}
 }
 
 // JWTAuth jwt认证
 type JWTAuth struct {
 	opts  *options
-	store Storer
+	store Store
 }
 
 // GenerateToken 生成令牌
-func (a *JWTAuth) GenerateToken(userID string) (auth.TokenInfo, error) {
+func (a *JWTAuth) GenerateToken(data string) (auth.TokenInfo, error) {
 	now := time.Now()
 	expiresAt := now.Add(time.Duration(a.opts.expired) * time.Second).Unix()
 
@@ -88,7 +89,7 @@ func (a *JWTAuth) GenerateToken(userID string) (auth.TokenInfo, error) {
 		IssuedAt:  now.Unix(),
 		ExpiresAt: expiresAt,
 		NotBefore: now.Unix(),
-		Subject:   userID,
+		Subject:   data,
 	})
 
 	tokenString, err := token.SignedString(a.opts.signingKey)
@@ -106,7 +107,7 @@ func (a *JWTAuth) GenerateToken(userID string) (auth.TokenInfo, error) {
 
 // 解析令牌
 func (a *JWTAuth) parseToken(tokenString string) (*jwt.StandardClaims, error) {
-	token, _ := jwt.ParseWithClaims(tokenString, &jwt.StandardClaims{}, a.opts.keyfunc)
+	token, _ := jwt.ParseWithClaims(tokenString, &jwt.StandardClaims{}, a.opts.keyFunc)
 	if !token.Valid {
 		return nil, auth.ErrInvalidToken
 	}
@@ -114,7 +115,7 @@ func (a *JWTAuth) parseToken(tokenString string) (*jwt.StandardClaims, error) {
 	return token.Claims.(*jwt.StandardClaims), nil
 }
 
-func (a *JWTAuth) callStore(fn func(Storer) error) error {
+func (a *JWTAuth) callStore(fn func(Store) error) error {
 	if store := a.store; store != nil {
 		return fn(store)
 	}
@@ -129,20 +130,20 @@ func (a *JWTAuth) DestroyToken(tokenString string) error {
 	}
 
 	// 如果设定了存储，则将未过期的令牌放入
-	return a.callStore(func(store Storer) error {
+	return a.callStore(func(store Store) error {
 		expired := time.Unix(claims.ExpiresAt, 0).Sub(time.Now())
 		return store.Set(tokenString, expired)
 	})
 }
 
-// ParseUserID 解析用户ID
-func (a *JWTAuth) ParseUserID(tokenString string) (string, error) {
+// ParseUserID 解析用户data
+func (a *JWTAuth) ParseData(tokenString string) (string, error) {
 	claims, err := a.parseToken(tokenString)
 	if err != nil {
 		return "", err
 	}
 
-	err = a.callStore(func(store Storer) error {
+	err = a.callStore(func(store Store) error {
 		exists, err := store.Check(tokenString)
 		if err != nil {
 			return err
@@ -160,7 +161,7 @@ func (a *JWTAuth) ParseUserID(tokenString string) (string, error) {
 
 // Release 释放资源
 func (a *JWTAuth) Release() error {
-	return a.callStore(func(store Storer) error {
+	return a.callStore(func(store Store) error {
 		return store.Close()
 	})
 }

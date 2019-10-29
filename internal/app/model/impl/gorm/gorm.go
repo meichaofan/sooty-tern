@@ -58,5 +58,6 @@ func AutoMigrate(db *gorm.DB) error {
 func Inject(container *dig.Container) error {
 	container.Provide(imodel.NewTrans, dig.As(new(model.ITrans)))
 	container.Provide(imodel.NewUser, dig.As(new(model.IUser)))
+	container.Provide(imodel.NewLoginInfo, dig.As(new(model.ILoginInfoModel)))
 	return nil
 }

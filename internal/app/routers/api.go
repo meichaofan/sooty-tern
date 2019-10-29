@@ -14,16 +14,25 @@ func RegisterRouter(app *gin.Engine, container *dig.Container) error {
 	if err != nil {
 		return err
 	}
-	return container.Invoke(func(cUser *api.User) error {
-		v1 := app.Group("/api/v1")
-		{
-			// 注册/api/v1/users
-			v1.GET("/users", cUser.Query)
-			v1.GET("/users/:record_id", cUser.Get)
-			v1.POST("/user", cUser.Create)
-			v1.PATCH("/users/:record_id/enable", cUser.Enable)
-			v1.PATCH("/users/:record_id/disable", cUser.Disable)
-		}
-		return nil
-	})
+	return container.Invoke(
+		func(
+			cUser *api.User,
+			cLoginInfo *api.LoginInfo,
+		) error {
+			v1 := app.Group("/api")
+			{
+				//mini_program
+				miniPro := v1.Group("/weapp")
+				miniPro.POST("/login", cLoginInfo.Login) //登录
+				miniPro.POST("/register")                //注册
+
+				// 注册/api/v1/users
+				v1.GET("/users", cUser.Query)
+				v1.GET("/users/:record_id", cUser.Get)
+				v1.POST("/user", cUser.Create)
+				v1.PATCH("/users/:record_id/enable", cUser.Enable)
+				v1.PATCH("/users/:record_id/disable", cUser.Disable)
+			}
+			return nil
+		})
 }

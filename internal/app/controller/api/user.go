@@ -1,7 +1,6 @@
 package api
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"sooty-tern/internal/app/ginplus"
 	"sooty-tern/internal/app/schema"
@@ -55,16 +54,6 @@ func (u *User) Create(c *gin.Context) {
 		ginplus.ResError(c, err)
 		return
 	}
-
-	fmt.Println("-----------")
-	fmt.Printf("record_id: %s", item.RecordId)
-	fmt.Printf("username: %s", item.Username)
-	fmt.Printf("atavar: %s", item.Avatar)
-	fmt.Printf("birthday: %s", item.Birthday)
-	fmt.Printf("sex: %d", item.Sex)
-	fmt.Printf("email: %s", item.Email)
-	fmt.Println("-----------")
-
 	newItem, err := u.UserService.Create(ginplus.NewContext(c), item)
 	if err != nil {
 		ginplus.ResError(c, err)

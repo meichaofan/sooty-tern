@@ -9,11 +9,11 @@ import (
 )
 
 // UserAuthMiddleware 用户授权中间件
-func UserAuthMiddleware(a auth.Auther, skipper ...SkipperFunc) gin.HandlerFunc {
+func UserAuthMiddleware(a auth.Auth, skipper ...SkipperFunc) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var userID string
 		if t := ginplus.GetToken(c); t != "" {
-			id, err := a.ParseUserID(t)
+			id, err := a.ParseData(t)
 			if err != nil {
 				if err == auth.ErrInvalidToken {
 					ginplus.ResError(c, errors.ErrNoPerm)

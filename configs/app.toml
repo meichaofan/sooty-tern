@@ -1,6 +1,10 @@
 run_mode = "debug"
 store = "gorm"
 
+[wechat]
+app_id = "wxdd752224f3423e18"
+app_secret= "da36004e22a8172dbfa95fe28eea81c6"
+
 [log]
 level = 5
 format = "text"
@@ -32,7 +36,7 @@ real_name = "超级管理员"
 signing_method = "HS512"
 signing_key = "SOOTY-TERN"
 expired = 7200
-store = "file"
+store = "redis"
 file_path = "data/jwt_auth.db"
 redis_db = 10
 redis_prefix = "auth_"

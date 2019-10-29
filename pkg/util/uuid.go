@@ -30,3 +30,12 @@ func NewRecordId() string {
 	}
 	return recordId[:8]
 }
+
+// NewSalt
+func NewSalt() string {
+	recordId, err := NewUUID()
+	if err != nil {
+		return ""
+	}
+	return recordId[:6]
+}

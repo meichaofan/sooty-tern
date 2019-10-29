@@ -5,18 +5,18 @@ import (
 	"sooty-tern/internal/app/config"
 	"sooty-tern/pkg/auth"
 	"sooty-tern/pkg/auth/jwtauth"
-	"sooty-tern/pkg/auth/jwtauth/store/buntdb"
-	"sooty-tern/pkg/auth/jwtauth/store/redis"
+	authRedis "sooty-tern/pkg/auth/jwtauth/store/redis"
+	"sooty-tern/pkg/store/redis"
 )
 
 // InitAuth 初始化用户认证
-func InitAuth() (auth.Auther, error) {
+func InitAuth() (auth.Auth, error) {
 	cfg := config.GetGlobalConfig().JWTAuth
 
 	var opts []jwtauth.Option
 	opts = append(opts, jwtauth.SetExpired(cfg.Expired))
 	opts = append(opts, jwtauth.SetSigningKey([]byte(cfg.SigningKey)))
-	opts = append(opts, jwtauth.SetKeyfunc(func(t *jwt.Token) (interface{}, error) {
+	opts = append(opts, jwtauth.SetKeyFunc(func(t *jwt.Token) (interface{}, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, auth.ErrInvalidToken
 		}
@@ -32,23 +32,17 @@ func InitAuth() (auth.Auther, error) {
 		opts = append(opts, jwtauth.SetSigningMethod(jwt.SigningMethodHS512))
 	}
 
-	var store jwtauth.Storer
+	var store jwtauth.Store
 	switch cfg.Store {
-	case "file":
-		s, err := buntdb.NewStore(cfg.FilePath)
-		if err != nil {
-			return nil, err
-		}
-		store = s
 	case "redis":
-		rcfg := config.GetGlobalConfig().Redis
-		store = redis.NewStore(&redis.Config{
-			Addr:      rcfg.Addr,
-			Password:  rcfg.Password,
+		reidsCfg := config.GetGlobalConfig().Redis
+		redisClient := redis.NewRedisClient(&redis.Config{
+			Addr:      reidsCfg.Addr,
+			Password:  reidsCfg.Password,
 			DB:        cfg.RedisDB,
 			KeyPrefix: cfg.RedisPrefix,
 		})
+		store = authRedis.NewStore(redisClient)
 	}
-
 	return jwtauth.New(store, opts...), nil
 }
