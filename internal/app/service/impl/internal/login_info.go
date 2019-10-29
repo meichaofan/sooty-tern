@@ -15,8 +15,9 @@ type LoginInfo struct {
 	LoginInfoModel model.ILoginInfoModel
 }
 
-func NewLoginInfo(loginInfoModel model.ILoginInfoModel) *LoginInfo {
+func NewLoginInfo(loginInfoModel model.ILoginInfoModel, auth auth.Auth) *LoginInfo {
 	return &LoginInfo{
+		auth:           auth,
 		LoginInfoModel: loginInfoModel,
 	}
 }
@@ -30,6 +31,9 @@ func (l *LoginInfo) Login(ctx context.Context, code string) (*schema.LoginRes, e
 	}
 	openId := result.OpenID
 	sessionKey := result.SessionKey
+
+	fmt.Printf("openId:%s , sessionKey:%s\n", openId, sessionKey)
+
 	token, err := l.GenerateToken(openId, sessionKey)
 	if err != nil {
 		return nil, errors.WithStack(err)

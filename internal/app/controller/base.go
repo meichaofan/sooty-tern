@@ -7,5 +7,6 @@ import (
 
 func Inject(container *dig.Container) error {
 	container.Provide(api.NewUser)
+	container.Provide(api.NewLoginInfo)
 	return nil
 }

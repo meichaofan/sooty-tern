@@ -1,6 +1,7 @@
 package jwtauth
 
 import (
+	"fmt"
 	"sooty-tern/pkg/auth"
 	"time"
 
@@ -82,6 +83,9 @@ type JWTAuth struct {
 
 // GenerateToken 生成令牌
 func (a *JWTAuth) GenerateToken(data string) (auth.TokenInfo, error) {
+
+	fmt.Printf("meichaofan --- %s",data)
+
 	now := time.Now()
 	expiresAt := now.Add(time.Duration(a.opts.expired) * time.Second).Unix()
 
