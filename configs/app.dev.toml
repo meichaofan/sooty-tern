@@ -8,8 +8,8 @@ app_secret= "da36004e22a8172dbfa95fe28eea81c6"
 [log]
 level = 5
 format = "text"
-output = "stdout"
-output_file = "data/ginadmin.log"
+output = "file"
+output_file = "logs/api"
 enable_hook = false
 hook = "gorm"
 hook_max_thread = 1
@@ -26,11 +26,6 @@ table = "g_logger"
 host = "0.0.0.0"
 port = 8080
 shutdown_timeout = 30
-
-[root]
-user_name = "root"
-password = "abc-123"
-real_name = "超级管理员"
 
 [jwt_auth]
 signing_method = "HS512"
@@ -55,7 +50,7 @@ allow_credentials = true
 max_age = 7200
 
 [redis]
-addr = "47.94.19.205:6379"
+addr = "192.168.136.130:6379"
 password = ""
 
 [gorm]
@@ -67,9 +62,9 @@ max_idle_conns = 50
 table_prefix = "lz_"
 
 [mysql]
-host = "47.94.19.205"
+host = "192.168.136.130"
 port= 3306
 user = "root"
-password = "huanhuan0921"
+password = "root"
 db_name = "lvzhou"
 parameters = "charset=utf8mb4&parseTime=True&loc=Local&allowNativePasswords=true"

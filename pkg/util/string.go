@@ -25,6 +25,14 @@ func (s S) Bool() (bool, error) {
 	return b, nil
 }
 
+// DefaultString 转换为String，如果出现错误则使用默认值
+func (s S) DefaultString(defaultVal string) string {
+	if s.String() == "" {
+		return defaultVal
+	}
+	return s.String()
+}
+
 // DefaultBool 转换为bool，如果出现错误则使用默认值
 func (s S) DefaultBool(defaultVal bool) bool {
 	b, err := s.Bool()

@@ -1,11 +1,5 @@
 package main
 
-import (
-	"fmt"
-	"time"
-)
-
 func main() {
-	t1 := time.Now()
-	fmt.Println(t1)
+	//a, b, c := int(time.Now().Date())
 }

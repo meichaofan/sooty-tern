@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"flag"
+	"fmt"
 	"os"
 	"os/signal"
 	"sooty-tern/internal/app"
@@ -13,23 +13,21 @@ import (
 )
 
 // VERSION 版本号，
-var VERSION = "v0.0.1"
+const VERSION = "v0.0.1"
 
 var (
+	rootPath   string
 	configFile string
+	env        string
 )
 
 func init() {
-	flag.StringVar(&configFile, "c", "", "the path to config file")
+	rootPath, _ = os.Getwd()
+	env = util.S(os.Getenv("sooty_tern_env")).DefaultString("dev")
+	configFile = fmt.Sprintf("%s%s%s.%s.toml", rootPath, string(os.PathSeparator), "configs/app", env)
 }
 
 func main() {
-	flag.Parse()
-
-	if configFile == "" {
-		panic("please specify the config file path")
-	}
-
 	var state int32 = 1
 	sc := make(chan os.Signal)
 	signal.Notify(sc, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)

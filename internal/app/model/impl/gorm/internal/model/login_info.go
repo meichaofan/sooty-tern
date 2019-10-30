@@ -20,11 +20,11 @@ func NewLoginInfo(db *gorm.DB) *LoginInfo {
 func (l *LoginInfo) Get(ctx context.Context, params schema.LoginInfoQueryParam) (*schema.LoginInfo, error) {
 	var item entity.LoginInfo
 	db := entity.GetLoginInfoDB(ctx, l.db)
-	if params.Uid != "" {
-		db.Where("uid = ?", params.Uid)
+	if uid := params.Uid; uid != "" {
+		db = db.Where("uid=?", uid)
 	}
-	if params.UidKey != "" {
-		db.Where("uid_key = ?", params.UidKey)
+	if uidKey := params.UidKey; uidKey != "" {
+		db = db.Where("uid_key=?", uidKey)
 	}
 	ok, err := FindOne(ctx, db, &item)
 	if err != nil {

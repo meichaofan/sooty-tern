@@ -13,6 +13,6 @@ type LoginTokenInfo struct {
 }
 
 type LoginRes struct {
-	LoginTokenInfo *LoginTokenInfo
-	IsRegister     interface{} `json:"is_register"`
+	LoginTokenInfo *LoginTokenInfo `json:"login_token_info"`
+	IsRegister     bool            `json:"is_register"`
 }

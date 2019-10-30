@@ -1,7 +1,7 @@
 package jwtauth
 
 import (
-	"fmt"
+	"sooty-tern/internal/app/errors"
 	"sooty-tern/pkg/auth"
 	"time"
 
@@ -83,9 +83,6 @@ type JWTAuth struct {
 
 // GenerateToken 生成令牌
 func (a *JWTAuth) GenerateToken(data string) (auth.TokenInfo, error) {
-
-	fmt.Printf("meichaofan --- %s",data)
-
 	now := time.Now()
 	expiresAt := now.Add(time.Duration(a.opts.expired) * time.Second).Unix()
 
@@ -99,6 +96,12 @@ func (a *JWTAuth) GenerateToken(data string) (auth.TokenInfo, error) {
 	tokenString, err := token.SignedString(a.opts.signingKey)
 	if err != nil {
 		return nil, err
+	}
+	//将tokenString 存入redis中
+	expired := time.Unix(expiresAt, 0).Sub(time.Now())
+	err = a.store.Set(tokenString, expired)
+	if err != nil {
+		return nil, errors.WithStack(err)
 	}
 
 	tokenInfo := &tokenInfo{

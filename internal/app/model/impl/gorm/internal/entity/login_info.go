@@ -40,3 +40,8 @@ func (s SchemaLoginInfo) ToLoginInfoEntity() *LoginInfo {
 		Salt:       s.Salt,
 	}
 }
+
+// TableName 表名
+func (l LoginInfo) TableName() string {
+	return l.Model.TableName("login_info")
+}
