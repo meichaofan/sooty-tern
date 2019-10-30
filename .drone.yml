@@ -42,11 +42,11 @@ steps:
         - docker-compose pull sooty-tern
         - docker-compose up -d
 
-triger:
+trigger:
   branch:
     - master
   event:
-    - push
+    - pull_request
 
 ---
 kind: pipeline
@@ -93,7 +93,7 @@ steps:
         - docker-compose pull sooty-tern
         - docker-compose up -d
 
-triger:
+trigger:
   branch:
     - test
   event:
