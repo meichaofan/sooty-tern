@@ -13,6 +13,7 @@ steps:
     environment:
       GOPROXY: https://goproxy.io
       GO111MODULE: on
+      sooty_tern_env: prod
 
   - name: publish
     image: plugins/docker
@@ -64,6 +65,7 @@ steps:
     environment:
       GOPROXY: https://goproxy.io
       GO111MODULE: on
+      sooty_tern_env: test
 
   - name: publish
     image: plugins/docker
