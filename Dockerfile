@@ -1,7 +1,8 @@
 FROM alpine:latest
 
 COPY sooty-tern /
-COPY configs/app.dev.toml /
+
+ENV sooty_tern_env prod
 
 WORKDIR /
 
