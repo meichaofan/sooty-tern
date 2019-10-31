@@ -5,5 +5,3 @@ services:
     container_name: my_sooty-tern
     ports:
       - "10080:8080"
-    environment:
-      - sooty_tern_env: ${sooty_tern_env:-prod}

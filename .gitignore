@@ -18,6 +18,9 @@
 
 .idea/
 
+# execable file
 main
+sooty-tern
+
 vendor/
 logs/

@@ -2,11 +2,12 @@ FROM alpine:latest
 
 COPY sooty-tern /
 
-ENV sooty_tern_env prod
+COPY configs /configs
+
+ENV sooty_tern_env dev
 
 WORKDIR /
 
 EXPOSE 8080
 
 ENTRYPOINT ["/sooty-tern"]
-CMD ["-c","app.toml"]
